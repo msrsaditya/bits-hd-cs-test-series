@@ -19,6 +19,14 @@ const pool = new Pool({
         port: 5432,
     })
 });
+(async () => {
+    const guest = await pool.query("SELECT id FROM users WHERE username = 'guest'");
+    if (guest.rows.length === 0) {
+        const hash = await bcrypt.hash('guest', 10);
+        await pool.query("INSERT INTO users (username, password_hash) VALUES ('guest', $1)", [hash]);
+        console.log('Guest user created');
+    }
+})();
 const requireLogin = (req, res, next) => {
     if (!req.session.user_id) return res.redirect('/login');
     next();
@@ -55,6 +63,11 @@ app.post('/signup', async (req, res) => {
         res.redirect('/home?msg=Account+created');
     } catch (e) { console.error(e); res.redirect('/signup?err=Signup+error'); }
 });
+app.get('/guest-login', async (req, res) => {
+    const guest = await pool.query("SELECT id FROM users WHERE username = 'guest'");
+    req.session.user_id = guest.rows[0].id;
+    res.redirect('/home?msg=You+are+browsing+as+a+guest');
+});
 app.get('/home', requireLogin, async (req, res) => {
     const tests = await pool.query('SELECT * FROM tests ORDER BY id');
     const msg = req.query.msg || null;
@@ -83,7 +96,8 @@ app.get('/dashboard/:test_id', requireLogin, async (req, res) => {
     const toppers = await pool.query(`
         SELECT u.username, ua.score, EXTRACT(EPOCH FROM (ua.end_time-ua.start_time))/60 as time_taken
         FROM user_attempts ua JOIN users u ON ua.user_id = u.id
-        WHERE ua.test_id = $1 ORDER BY ua.score DESC, time_taken ASC LIMIT 10
+        WHERE ua.test_id = $1 AND ua.user_id != (SELECT id FROM users WHERE username = 'guest')
+        ORDER BY ua.score DESC, time_taken ASC LIMIT 10
     `, [test_id]);
     const myAttempts = await pool.query(`
         SELECT id, score, EXTRACT(EPOCH FROM (end_time-start_time))/60 as time_taken, start_time
@@ -144,6 +158,10 @@ app.post('/resources/php/webapp.php', async (req, res) => {
     }
     if (fn === 'SaveProgress') return res.json({ status: "success" });
     if (fn === 'SubmitResults') {
+        const guestCheck = await pool.query("SELECT username FROM users WHERE id = $1", [user_id]);
+        if (guestCheck.rows[0]?.username === 'guest') {
+            return res.json({ resultid: 0, status: "success" });
+        }
         const answers = JSON.parse(Buffer.from(req.body.post_response, 'base64').toString('utf8'));
         const postIds = JSON.parse(Buffer.from(req.body.post_postids, 'base64').toString('utf8'));
         const qtimetaken = JSON.parse(Buffer.from(req.body.post_qtimetaken, 'base64').toString('utf8'));
@@ -192,6 +210,9 @@ app.post('/resources/php/webapp.php', async (req, res) => {
 });
 app.post('/results.php', async (req, res) => {
     const attempt_id = req.body.resultid || req.body.res_exam_id;
+    if (attempt_id == 0) {
+        return res.send('<h2 style="text-align:center;margin-top:50px;">Guest mode – results are not saved.</h2>');
+    }
     if (!attempt_id) return res.redirect('/home');
     const attempt = await pool.query('SELECT * FROM user_attempts WHERE id=$1', [attempt_id]);
     if (attempt.rows.length === 0) return res.redirect('/home');
