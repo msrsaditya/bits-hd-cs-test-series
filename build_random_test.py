@@ -6,6 +6,7 @@ cur.execute("DELETE FROM user_responses")
 cur.execute("DELETE FROM user_attempts")
 cur.execute("DELETE FROM test_questions")
 cur.execute("DELETE FROM tests")
+cur.execute("ALTER SEQUENCE tests_id_seq RESTART WITH 1")
 print("Updating marking scheme to +3 / -1 for all questions...")
 cur.execute("UPDATE questions SET positive_marks = 3.0, negative_marks = 1.0")
 test_subjects = {
