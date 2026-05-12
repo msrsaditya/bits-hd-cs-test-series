@@ -1,0 +1,6 @@
+- math broken around matrices
+- guest page result not working
+TypeError: Cannot read properties of undefined (reading 'id')
+    at /home/Shashank/Developer/Test Series/server.js:228:22
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+- images not loading, db issue?
