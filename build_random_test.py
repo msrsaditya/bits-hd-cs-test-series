@@ -1,5 +1,9 @@
-import psycopg2, random
-conn = psycopg2.connect(dbname="exam_db", user="exam_user", password="password", host="127.0.0.1")
+import os, psycopg2, random
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    conn = psycopg2.connect(DATABASE_URL)
+else:
+    conn = psycopg2.connect(dbname="exam_db", user="exam_user", password="password", host="127.0.0.1")
 cur = conn.cursor()
 print("Clearing existing data...")
 cur.execute("DELETE FROM user_responses")

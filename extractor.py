@@ -1,6 +1,10 @@
 import os, glob, hashlib, psycopg2, shutil, urllib.parse, re
 from bs4 import BeautifulSoup
-conn = psycopg2.connect(dbname="exam_db", user="exam_user", password="password", host="127.0.0.1")
+DATABASE_URL = os.environ.get("DATABASE_URL")
+if DATABASE_URL:
+    conn = psycopg2.connect(DATABASE_URL)
+else:
+    conn = psycopg2.connect(dbname="exam_db", user="exam_user", password="password", host="127.0.0.1")
 cur = conn.cursor()
 RESULTS_DIR = os.path.expanduser("~/Downloads/Results/")
 ASSETS_DIR = "./public/assets/"
