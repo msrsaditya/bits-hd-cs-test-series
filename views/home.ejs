@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+</head>
+<body style="background:#121212;color:white">
+<div class="container mt-5">
+    <h1 class="mb-4">BITS HD CS Test Series</h1>
+    <% if (msg) { %><div class="alert alert-success"><%= msg %></div><% } %>
+    <div class="row">
+        <% tests.forEach(test => { %>
+            <div class="col-md-4 mb-3">
+                <div class="card bg-dark text-white shadow-sm border-secondary">
+                    <div class="card-body">
+                        <h5 class="card-title"><%= test.title %></h5>
+                        <p class="card-text"><%= test.duration_minutes %> min | <%= test.total_marks %> marks</p>
+                        <a href="/dashboard/<%= test.id %>" class="btn btn-outline-light w-100">View Exam</a>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+</body>
+</html>

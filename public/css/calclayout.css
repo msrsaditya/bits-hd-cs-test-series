@@ -1,0 +1,267 @@
+*{
+	box-sizing: border-box; 
+    -webkit-box-sizing: border-box; 
+    -moz-box-sizing: border-box; 
+}
+
+body{
+    font-family: Arial;
+}
+.calc_close{
+	background: none repeat scroll 0 0 black;
+	border-radius: 50%;
+	color: #fff;
+	font-size: 12px;
+	font-weight: bold;
+	height: 25px;
+	line-height: 25px;
+	position: absolute;
+	right: -12px;
+	text-align: center;
+	top: -12px;
+	width: 25px;
+	cursor:pointer;
+}
+.calc_close:hover{
+	background:#c0392b;
+}
+.calc_container {
+    background: none repeat scroll 0 0 #dadada;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    box-shadow: 0 0 15px 0 rgba(0, 0, 0, 0.1) inset;
+    padding: 10px;
+	width: 490px;
+    max-width: 490px;
+    border-bottom: 7px solid #999;
+    position:relative;
+}
+
+.left_sec{
+    
+}
+.right_sec{
+    float: left;
+    height:180px; 
+}
+/* KEY ROW */
+.calc_row{
+    display: block;
+    overflow: hidden;
+    margin-bottom: 5px;
+}
+
+
+/* KEY BUTTONS */
+#keyPad a {
+    background: #f1f1f1;
+    border-color: #aaa;
+    border-image: none;
+    border-radius: 4px;
+    border-style: solid;
+    border-width: 1px 1px 3px;
+    color: #444;
+    cursor: pointer;
+    /*  display: block; */
+    float: left;
+    font-size: 12px;
+    font-weight: bold;
+    height: 25px;
+    line-height: 20px;
+    margin-right: 5px;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    width: 35px;
+}
+#keyPad a.min {
+    font-size: 10.5px;
+}
+#keyPad a.last {
+    margin-right: 0px;
+}
+
+
+#keyPad a:active {
+    position: relative;    
+    height: 25px;
+    border-bottom: 1px solid #aaa;
+}
+#keyPad_btnEnter:active  {
+	position:absolute !important;	
+	bottom:17px !important;  
+}
+#keyPad a:hover  {
+    background: #eaeaea;
+}
+.text_container {
+   display:inline;
+  /*  position: absolute; */
+}
+ .memoryhide {
+  visibility: hidden;
+  position: absolute;
+  top: 52px;
+  right:429px;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 1s, visibility, 1s;
+}
+.memoryshow {
+position: absolute;
+  top: 52px;
+  right:429px;
+  bottom: 0;
+  visibility: visible;
+  opacity: 1;
+} 
+
+/* INPUT/MEM TEXT BOXES*/
+.keyPad_TextBox, .keyPad_TextBox1{
+    background: none repeat scroll 0 0 #fff;
+    border-color: #aaa;
+    border-image: none;
+    border-radius: 3px;
+    border-style: solid;
+    border-width: 1px 1px 3px;
+    font-size: 20px;
+    height: 30px;
+    line-height: 30px;
+    text-align: right;
+    text-indent: 10px;
+    vertical-align: middle;
+    width: 100%;
+    float: left;
+    margin-bottom: 7px;
+    padding-right:5px;	
+}
+
+.degree_radian{
+    float: left;
+    height: 25px;
+    width: 80px;
+    display: inline-block;
+    font-size:9px;
+    margin-top: 4px;
+    vertical-align: middle;
+}
+
+#keyPad_btnDot{
+	width:35px!important;
+}
+#keyPad_btn0{
+	width:76px!important;
+}
+/* ARROWS */
+.calc_arrows{
+    font-size: 24px!important;
+    /*line-height: 29px!important;*/
+}
+
+/* ENTER a: QUAD WIDTH */
+#keyPad #keyPad_btnEnter{
+    background: none repeat scroll 0 0 #2ecc71;
+    border-color: #27ae60;
+    color: #fff;
+    font-size: 20px;
+    line-height: 47px;
+    right: 2px;
+    bottom: 0;
+    width: 35px;
+    height: 53px;
+    position: absolute;
+    font-size: 20px;
+}
+	
+/* ZERO a: DOUBLE WIDTH  
+#keyPad #keyPad_btn0{  
+    width: 95px;  
+}*/
+
+/* BACKSPACE/CLEAR INPUT KEYS*/
+
+#keyPad #keyPad_btnClr,
+#keyPad #keyPad_btnInverseSign,
+#keyPad #keyPad_btnAllClr{
+    background: none repeat scroll 0 0 #e74c3c;
+    color: #fff;
+    border-color: #c0392b;
+	width:35px!important;
+    
+}
+#keyPad #keyPad_btnBack
+{
+background: none repeat scroll 0 0 #e74c3c;
+    color: #fff;
+    border-color: #c0392b;
+	width:76px!important;
+}	
+/* SPECIAL FORMATTING FOR SUPER-SCRIPT KEYS */
+#keyPad #keyPad_btnSquare,
+#keyPad #keyPad_btnCube,
+#keyPad #keyPad_btnExp,
+#keyPad #keyPad_btnYpowX{ 
+    font-size: 12px;
+}
+
+/* CLEAR BOTH */
+.clear {
+    clear: both;
+    height: 0 !important;
+    width: 0 !important;
+}
+
+/* Fix for calculator */
+.calc_row.clear {
+    height: initial !important;
+    width: initial !important;
+}
+
+.superscript,.subscript  {
+    font-size: 0.7em;
+    position: relative;
+    top: -0.5em;
+}
+.subscript {
+   top: 0.5em;
+}
+
+.calc_leftPanel {
+    width: 240px;
+    float: left;
+}
+.calc_rightPanel {
+    width: 202px;
+    float: right;
+	position: relative;
+}
+
+
+@media (max-width:950px) {
+	
+	#ec_calculator_instance {
+		left: 0;
+		right: 0;
+		padding: 0 1rem;
+	}
+	
+	#actionButton .actionBn {
+		height: 50px;
+		vertical-align: top;
+	}
+
+}
+
+@media (max-width:500px) {
+	.calc_container {
+		max-width: 257px;
+	}
+	.calc_leftPanel, .calc_rightPanel {
+		float: none;
+		margin: 0 auto;
+	}
+	.calc_rightPanel {
+		border-top: 1px solid #bdbbbb;
+		padding-top: .6rem;
+	}
+}

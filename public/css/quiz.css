@@ -1,0 +1,489 @@
+/* ============================================================
+   quiz.css  –  structural styles extracted from quiz.php
+   (previously scattered as inline style="" attributes)
+   ============================================================ */
+
+/* ── Page shell ─────────────────────────────────────────── */
+#page-content          { margin-top: 45px; }
+
+/* ── Fixed top navigation bar ───────────────────────────── */
+.quiz-top-bar {
+    position: fixed;
+    top: 55px; left: 0; right: 0;
+    z-index: 1000;
+    height: 30px; width: auto;
+    background-color: #363636;
+    color: #EAEA4C;
+    padding: 10px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    overflow: hidden;
+}
+.instruction_icon {
+	background: url('../images/Icon-sprite.png') no-repeat -140px -7px;
+	width: 18px;
+	height: 18px;
+	margin-right: 7px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+	float:left;
+}
+.questionpaper_icon {
+	background: url('../images/Icon-sprite.png') no-repeat -188px -8px;
+	width: 18px;
+	height: 18px;
+	margin-right: 7px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+	float:left;
+}
+
+.quiz-exam-name        { font-size: 0.8rem; font-weight: bold; }
+.quiz-header-controls  { display: flex; align-items: center; gap: 5px; }
+/* Fix: .button1 { width:100% } expands header buttons; clamp icon size */
+.quiz-header-controls .button1 { width: auto; padding: 3px 8px; }
+.quiz-header-btn       { display: inline-flex; align-items: center; gap: 5px; max-height: 26px; overflow: hidden; }
+.quiz-header-btn svg,
+.quiz-header-btn img   { height: 16px; width: 16px; flex-shrink: 0; }
+
+/* ── Calculator widget ───────────────────────────────────── */
+/* Note: #keyPad uses inline style="position:absolute" to avoid overriding
+   .calc_container { position:relative } which is used for child positioning */
+#memory, .memoryhide   { height: 22px; }
+
+/* ── Sections sticky header ─────────────────────────────── */
+.quiz-sections-title       { font-weight: bold; }
+.quiz-sections-header-row  { display: flex; align-items: center; gap: 10px; }
+.quiz-time-container       { height: 50px; display: flex; align-items: center; }
+#showTime                  { font-weight: bold; font-size: larger; }
+.quiz-calc-area            { text-align: right; white-space: nowrap; }
+#ec_calculator             { width: 30px; height: 30px; padding-top: 1px; margin-right: 8px; cursor: pointer; }
+#ec_calculator_instance    { z-index: 2100 !important; top: 90px !important; }
+#sections                  { width: 100%; }
+#quesAward                 { color: green; }
+#quesPenalty               { color: red; }
+#qntimer                   { display: none; }
+
+/* ── Question number bar ─────────────────────────────────── */
+#quesNumberDiv {
+    height: 30px;
+    border: 1px solid #BDBDBD;
+    padding: 5px 10px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.quiz-ques-num           { font-size: 1em; font-family: Arial, verdana, helvetica, sans-serif; }
+
+/* ── Scroll controls – right edge of question area ─────── */
+/* JS sets top/left/height from #quesOuterDiv bounding rect so the
+   buttons stay pinned exactly to the question scroll area.          */
+.questionScrollButton {
+    background-color: rgba(30, 30, 30, 0.65);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#questionScrollDown { margin-top: auto; }
+
+/* ── Instructions page ───────────────────────────────────── */
+#firstPage               { padding: 2px; }
+.w-100                   { width: 100%; }
+
+/* ── Profile div ─────────────────────────────────────────── */
+#profileDiv              { display: none; }
+.quiz-profile-table      { border: 1px solid #000; font-size: 14px; }
+
+/* ── Question paper div ──────────────────────────────────── */
+/* QPDiv sits under the same fixed sticky header as #questionCont.
+   padding-top pushes the first question below the overlay. */
+#QPDiv                   { display: none; z-index: -1; padding-top: 160px; }
+
+/* ── Question + answer area ──────────────────────────────── */
+/* The sticky header (#sectionsStickyHeaderWrap) is position:fixed and
+   covers sections bar + marks span + question-number bar above the scroll
+   area.  margin-top on #quesContents must push content below that entire
+   overlay so nothing is clipped.  Measured: wrapper starts at ~81px from
+   viewport-top and totals ~148px tall → bottom ≈ 229px.  #quesOuterDiv
+   top ≈ 70px → clearance needed ≈ 160px. */
+#quesContents            { margin-top: 160px !important; }
+/* Prevent question content from expanding under the sidebar.
+   .mainLeft is float:left so it can grow to fit content — hard-constrain
+   its max-width AND clip overflow at every level. */
+.mainLeft {
+    overflow: hidden !important;       /* clip both axes */
+    max-width: var(--quiz-left-width) !important;
+}
+#questionCont {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    width: 100% !important;
+}
+#quesOuterDiv {
+    max-width: 100% !important;
+}
+#quesContents {
+    overflow-x: auto;
+    max-width: 100%;
+    word-break: break-word;
+}
+#numericAnswer           { padding: 0 10px 20px 10px; background-color: #F4F4F4; width: 150px; }
+#numericAnswerContent    { text-align: left; cursor: text; }
+.nat-keypad-row-wide     { width: 100%; padding-left: 30px; padding-right: 30px; }
+
+/* ── Action button footer ────────────────────────────────── */
+/* Full-width fixed bar split into main area + sidebar area */
+#actionButton {
+    display: flex !important;
+    flex-wrap: nowrap !important;  /* override style.css flex-wrap:wrap */
+    width: 100.5% !important;       /* override style.css width:auto */
+    align-items: stretch;
+    left: 0 !important;
+    right: 0 !important;
+    z-index: 2001 !important;
+    padding: 0 !important;
+}
+/* Override the panel-collapsed right offset – bar always spans full width */
+#actionButton.panel-collapsed { right: 0 !important; }
+/* Main area: sits under the question content (left 85%) */
+.actionButton-main {
+    flex: 0 var(--quiz-left-width);
+    width: var(--quiz-left-width);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.15rem 0.5rem;
+    background-color: #fff;
+}
+/* Sidebar area: sits under the right panel (right 15%) */
+.actionButton-sidebar {
+    flex: 0 0 var(--quiz-right-width);
+    width: var(--quiz-right-width);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.15rem 0.5rem;
+    background-color: #d4edfa;
+    border-left: 1px solid #bdbdbd;
+}
+.actionButton-group-left  { display: flex; gap: 5px; }
+.actionButton-group-right { display: flex; gap: 5px; align-items: center; }
+/* Higher specificity ensures white-outlined style wins over .btnEnabled blue */
+#actionButton .quiz-light-btn { background-color: #fff !important; border: 1px solid #bdbdbd !important; color: #000 !important; }
+/* Submit button fills the sidebar section */
+.quiz-submit-btn  { background-color: #147EB3 !important; color: #fff !important; opacity: 0.65; border: 1px solid #147EB3 !important; width: 80%; padding: 8px 12px !important; font-size: 0.8rem !important; font-weight: 700 !important; }
+.quiz-submit-btn:hover { background-color: #147EB3 !important; opacity: 1;}
+
+
+
+/* ── Section summary / confirm screen ───────────────────── */
+#sectionSummaryDiv        { display: none; overflow: hidden; }
+.quiz-summary-title       { font-size: 16px; font-weight: bold; }
+.quiz-summary-table-wrap  { overflow: auto; text-align: center; }
+.quiz-summary-table       { margin-top: 18%; }
+.text-center              { text-align: center; }
+
+/* ── Right panel – timer + candidate ────────────────────── */
+#timer {
+    height: 110px;
+    margin-top: 5px;
+    padding-top: 7px;
+    border-bottom: 1px solid #BDBDBD;
+}
+#timerRightSideDiv        { width: 50%; float: left; padding-top: 7px; padding-bottom: 7px; }
+.quiz-cand-info           { height: 50px; }
+.quiz-cand-name           { width: 100%; font-size: 20px; padding-top: 15px; }
+
+/* ── Question legend table ───────────────────────────────── */
+.diff_type_notation_area_inner { margin-bottom: 10px; }
+
+/* ── Sidebar numberpanel: fixed header, scrollable buttons ── */
+.numberpanel {
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;  /* panel itself doesn't scroll */
+}
+/* Only the question-number buttons area scrolls */
+#numberpanelQues {
+    flex: 1 1 auto !important;
+    overflow-y: auto !important;
+    min-height: 0 !important;
+}
+
+/* ── Question palette & legend: CSS icons (no sprite) ─────── */
+
+/* ── Question palette (large buttons in sidebar) ─────────── */
+/* Kill the sprite image on all button_item elements */
+.button_item {
+    background-image: none !important;
+    background-color: #999 !important;    /* default = not_visited gray */
+    border-radius: 4px !important;
+    position: relative;
+    box-sizing: border-box;
+}
+.review_answered {
+    background-image: none !important;
+}
+
+/* ── State colours & shapes ─────────────────────────────── */
+/* Shapes closely match the original buttons-sprite.png */
+.not_visited {
+    background-color: #9e9e9e !important;
+    border-radius: 4px !important;
+    clip-path: none !important;
+    color: #fff !important;
+}
+.not_answered {
+    background-color: #e53935 !important;
+    border-radius: 0 !important;
+    /* Irregular hexagon: full-width top, all other 5 sides equal length */
+    clip-path: polygon(0% 0%, 100% 0%, 100% 53%, 76% 100%, 24% 100%, 0% 53%) !important;
+    color: #fff !important;
+}
+.answered {
+    background-color: #43a047 !important;
+    border-radius: 0 !important;
+    clip-path: polygon(24% 0%, 76% 0%, 100% 47%, 100% 100%, 0% 100%, 0% 47%) !important;
+    color: #fff !important;
+}
+.review {
+    background-color: #7b1fa2 !important;
+    border-radius: 50% !important;
+    clip-path: none !important;
+    color: #fff !important;
+}
+.review_answered {
+    background-color: #7b1fa2 !important;
+    border-radius: 50% !important;
+    clip-path: none !important;
+    color: #fff !important;
+}
+/* Green check-mark badge on review_answered */
+.review_answered::after {
+    content: '\2713';
+    position: absolute;
+    bottom: -2px; right: -4px;
+    font-size: 0.6em;
+    font-weight: bold;
+    color: #fff;
+    background: #43a047;
+    border-radius: 50%;
+    width: 14px; height: 14px;
+    line-height: 14px;
+    text-align: center;
+}
+
+/* ── Question palette (large buttons in sidebar) ─────────── */
+#numberpanelQues center   { padding-top: 5px; }
+#question_area            { margin-top: -2%; }
+#numberpanelQues .button_item {
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    margin: 4px 3px 5px 4px;
+    font-size: 0.85rem;
+}
+#numberpanelQues .review_answered {
+    width: 42px;
+    height: 42px;
+    line-height: 42px;
+    margin: 4px 3px 5px 4px;
+}
+
+/* ── Legend (small icons in sidebar) ─────────────────────── */
+/* 1.8× of original 19×18 = 34×32 */
+#legend .button_item {
+    width: 34px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+}
+.not_visited_small    { background-color: #9e9e9e !important; border-radius: 3px !important; clip-path: none !important; }
+.not_answered_small   { background-color: #e53935 !important; border-radius: 0 !important; clip-path: polygon(0% 0%, 100% 0%, 100% 53%, 76% 100%, 24% 100%, 0% 53%) !important; }
+.answered_small       { background-color: #43a047 !important; border-radius: 0 !important; clip-path: polygon(24% 0%, 76% 0%, 100% 47%, 100% 100%, 0% 100%, 0% 47%) !important; }
+.review_small         { background-color: #7b1fa2 !important; border-radius: 50% !important; clip-path: none !important; }
+.review_answered_small {
+    background-color: #7b1fa2 !important;
+    border-radius: 50% !important;
+    clip-path: none !important;
+    width: 34px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+}
+.review_answered_small::after {
+    content: '\2713';
+    position: absolute;
+    bottom: -1px; right: -3px;
+    font-size: 0.5em;
+    font-weight: bold;
+    color: #fff;
+    background: #43a047;
+    border-radius: 50%;
+    width: 10px; height: 10px;
+    line-height: 10px;
+    text-align: center;
+}
+
+/* ── Tooltip section popup icons ─────────────────────────── */
+.classic .button_item {
+    background-image: none !important;
+}
+
+/* ── Summary table ───────────────────────────────────────── */
+
+/* Mobile submit button in sidebar – hidden on desktop */
+.quiz-mobile-submit       { display: none; }
+/* \u2500\u2500 Offline status banner \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500 */
+#quiz-offline-banner {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 9999;
+    background-color: #d32f2f;
+    color: #fff;
+    text-align: center;
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transform: translateY(-100%);
+    transition: transform .3s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+#quiz-offline-banner.visible {
+    transform: translateY(0);
+}
+#quiz-offline-banner.waiting {
+    background-color: #e65100;
+}
+/* ── Resume / Start Fresh dialog ─────────────────────────── */
+#quiz-resume-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: rgba(0,0,0,0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity .3s ease;
+}
+#quiz-resume-overlay.visible { opacity: 1; }
+
+#quiz-resume-box {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    padding: 28px 32px 24px;
+    max-width: 420px;
+    width: 90%;
+    text-align: center;
+    transform: translateY(20px);
+    transition: transform .3s ease;
+}
+#quiz-resume-overlay.visible #quiz-resume-box {
+    transform: translateY(0);
+}
+#quiz-resume-box h3 {
+    margin: 0 0 18px;
+    font-size: 1.25rem;
+    color: #263238;
+}
+.quiz-resume-stats {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 22px;
+    font-size: 0.9rem;
+}
+.quiz-resume-stats td {
+    padding: 6px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: left;
+}
+.quiz-resume-stats tr:last-child td { border-bottom: none; }
+.quiz-resume-stats td:first-child { color: #546e7a; }
+.quiz-resume-stats td:last-child  { text-align: right; }
+.quiz-resume-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+.quiz-resume-btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background .2s;
+}
+.quiz-resume-btn.resume {
+    background: #1565c0;
+    color: #fff;
+}
+.quiz-resume-btn.resume:hover { background: #0d47a1; }
+.quiz-resume-btn.fresh {
+    background: #e0e0e0;
+    color: #333;
+}
+.quiz-resume-btn.fresh:hover { background: #bdbdbd; }
+
+/* ── Panel-collapsed: main area expands to full width ────── */
+.mainLeft.panel-collapsed {
+    max-width: calc(100% - 2rem) !important;
+}
+#actionButton.panel-collapsed .actionButton-main {
+    flex: 1 1 100%;
+    width: 100%;
+}
+#actionButton.panel-collapsed .actionButton-sidebar {
+    display: none;
+}
+.quiz-top-bar.panel-collapsed              { right: 0 !important; }
+.sectionsStickyHeaderWrap.panel-collapsed   { right: 0.9rem !important; }
+
+/* ================================================================
+   Mobile overrides  (max-width: 950px)
+   ================================================================ */
+@media (max-width: 950px) {
+
+    /* Top bars span full width on mobile (no sidebar gap) */
+    .quiz-top-bar              { right: 0 !important; }
+    .sectionsStickyHeaderWrap  { right: 0 !important; }
+
+    /* Sidebar above everything when opened */
+    .mainRight.opened          { z-index: 1100 !important; }
+
+    /* mainLeft is full width on mobile */
+    .mainLeft                  { max-width: 100% !important; }
+
+    /* Action bar: full-width flex row, hide sidebar section.
+       Use #actionButton .actionButton-sidebar so specificity beats
+       the `#actionButton div { display:flex }` rule below.           */
+    #actionButton              { display: flex !important; flex-wrap: wrap !important; }
+    .actionButton-main         { flex: 1 1 100% !important; width: 100% !important; }
+    #actionButton .actionButton-sidebar { display: none !important; }
+
+    /* Override style.css `#actionButton div { width:48%; display:inline-block }` */
+    #actionButton div          { width: auto !important; display: flex !important; float: none !important; }
+    .actionButton-group        { flex: 1 1 auto; justify-content: center; }
+
+    /* mainLeft: no sidebar to overflow into – allow vertical scroll */
+    .mainLeft                  { overflow: visible !important; }
+
+    /* Extra bottom padding so content isn't hidden behind the fixed action bar */
+    #questionCont              { padding-bottom: 120px !important; }
+
+    /* Show submit button inside the sidebar panel on mobile */
+    .quiz-mobile-submit {
+        display: block;
+        padding: 10px;
+        text-align: center;
+        border-top: 1px solid #bdbdbd;
+    }
+    .quiz-summary-table       { margin-top: 30%; }
+}

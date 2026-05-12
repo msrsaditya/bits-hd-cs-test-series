@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/res_style.css">
+    <link rel="stylesheet" href="/css/katex.min.css">
+    <link rel="stylesheet" href="/css/prettify.css">
+    <link rel="stylesheet" href="/css/prettify_002.css">
+    <style>
+        body { background-image: none !important; background-color: #f4f6f9; }
+        .score-pct { font-size: 1.4rem !important; font-weight: 700 !important; fill: #1e293b !important; }
+        .score-label { font-size: 0.7rem !important; fill: #64748b !important; }
+        .gauge-stat-val { font-size: 1.8rem !important; font-weight: 700 !important; }
+        .gauge-stat-lbl { font-size: 0.8rem !important; color: #64748b !important; }
+    </style>
+    <script defer src="/js/katex.min.js"></script>
+    <script defer src="/js/auto-render.min.js" onload="renderMathInElement(document.body,{delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false},{left:'\\(',right:'\\)',display:false},{left:'\\[',right:'\\]',display:true}],throwOnError:false})"></script>
+    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+</head>
+<body>
+<div class="res_content">
+    <div class="exam_summary">
+        <div class="exam_name"><h2>Exam Summary (<%= test.title %>)</h2></div>
+        <div class="score-gauge-container">
+            <div class="score-gauge">
+                <svg viewBox="0 0 120 120" class="score-ring">
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="#e0e6f8" stroke-width="10"/>
+                    <circle cx="60" cy="60" r="52" fill="none" stroke="#d73027" stroke-width="10" stroke-linecap="round"
+                            stroke-dasharray="<%= Math.max(0, (parseFloat(stats.netMarks) / test.total_marks) * 326.7) %> 326.7"
+                            transform="rotate(-90 60 60)"/>
+                    <text x="60" y="55" text-anchor="middle" class="score-pct"><%= ((parseFloat(stats.netMarks) / test.total_marks) * 100).toFixed(1) %>%</text>
+                    <text x="60" y="72" text-anchor="middle" class="score-label"><%= stats.netMarks %>/<%= test.total_marks %></text>
+                </svg>
+            </div>
+            <div class="score-gauge-stats">
+                <div class="gauge-stat"><span class="gauge-stat-val gauge-correct"><%= stats.correct %></span><span class="gauge-stat-lbl">Correct</span></div>
+                <div class="gauge-stat"><span class="gauge-stat-val gauge-wrong"><%= stats.incorrect %></span><span class="gauge-stat-lbl">Wrong</span></div>
+                <div class="gauge-stat"><span class="gauge-stat-val gauge-skip"><%= stats.skipped %></span><span class="gauge-stat-lbl">Skipped</span></div>
+                <div class="gauge-stat"><span class="gauge-stat-val gauge-time"><%= stats.time %>m</span><span class="gauge-stat-lbl">of <%= test.duration_minutes %>m</span></div>
+            </div>
+        </div>
+        <div class="exam_response_status-1 res-col">
+            <div class="exam_table_item"><p class="exam_qs_title">Qs. Attempted: </p><p class="res_num"><span class="exam_num_item"><%= stats.correct + stats.incorrect %></span></p></div>
+            <div class="exam_table_item"><p class="exam_qs_title">Correct Attempts: </p><p class="res_num"><span class="exam_num_item"><%= stats.correct %></span></p></div>
+            <div class="exam_table_item"><p class="exam_qs_title">Incorrect Attempts: </p><p class="res_num"><span class="exam_num_item"><%= stats.incorrect %></span></p></div>
+        </div>
+        <div class="exam_response_status-2 res-col">
+            <div class="exam_table_item"><p class="exam_qs_title">Correct Marks: </p><p class="res_num"><span class="exam_num_item"><%= stats.correctMarks %></span></p></div>
+            <div class="exam_table_item"><p class="exam_qs_title">Penalty Marks: </p><p class="res_num"><span class="exam_num_item"><%= stats.penaltyMarks %></span></p></div>
+            <div class="exam_table_item"><p class="exam_qs_title">Resultant Marks: </p><p class="res_num"><span class="exam_num_item"><%= stats.netMarks %></span></p></div>
+        </div>
+        <div class="exam_meta res-col">
+            <div class="exam_table_item"><p class="exam_qs_title">Total Questions:</p><p class="res_num"><span class="exam_num_item"><%= test.total_marks %></span></p></div>
+            <div class="exam_table_item"><p class="exam_qs_title">Total Marks:</p><p class="res_num"><span class="exam_num_item"><%= test.total_marks %></span></p></div>
+            <div class="exam_table_item exam_duration"><p class="exam_qs_title">Exam Duration:</p><p class="res_num"><span class="exam_min_duration"><%= test.duration_minutes %> Minutes</span></p></div>
+            <div class="exam_table_item"><p class="exam_qs_title">Time Taken: </p><p class="res_num"><span class="exam_min_taken"><%= stats.time %> Minutes</span></p></div>
+        </div>
+    </div>
+    <div id="exam_result_section_response">
+        <% let currentSection = ''; responses.forEach(function(r) { 
+            if (r.section_name !== currentSection) {
+                currentSection = r.section_name;
+        %>
+        <div class="res_section"><h2><%= currentSection %></h2></div>
+        <% } %>
+        <div class="res_question">
+            <div class="res_qs_meta">
+                <span class="res_qs_top_meta1 res_qs_num badge badge-secondary"><b>Q #<%= r.question_order %></b></span>
+                <span class="res_qs_top_meta1 res_qs_type badge badge-secondary"><%= r.question_type %></span>
+                <span class="res_qs_top_meta1 res_qs_marks badge badge-secondary">Award: <%= r.positive_marks %></span>
+                <span class="res_qs_top_meta1 res_qs_penalty badge badge-secondary">Penalty: <%= r.negative_marks %></span>
+                <span class="res_qs_top_meta1 res_qs_category badge badge-secondary"><%= r.subject %></span>
+                <% if (r.difficulty) { %>
+                <span class="res_qs_top_meta1 badge diff-<%= r.difficulty.toLowerCase() %>" title="Difficulty: <%= r.difficulty %>">
+                    <%= r.difficulty %><% if (r.diff_percentage) { %> (<%= r.diff_percentage %>%)<% } %>
+                </span>
+                <% } %>
+            </div>
+            <div class="res_question_text"><%- r.html_content %></div>
+            <div class="res_solution">
+                <span class="res_qs_bottom_meta1 user_solution badge badge-primary">
+                    Your Answer: <%= r.selected_answer ? (r.question_type !== 'Numerical' ? String.fromCharCode(64 + parseInt(r.selected_answer)) : r.selected_answer) : 'None' %>
+                </span>
+                <span class="res_qs_bottom_meta1 correct_solution badge badge-primary">Correct Answer: <%= r.correct_option %></span>
+                <% if (r.is_correct) { %><span class="res_qs_bottom_meta1 res_status res_status_correct badge badge-success">Correct</span>
+                <% } else if (!r.selected_answer || r.selected_answer === '0') { %><span class="res_qs_bottom_meta1 res_status res_status_not_attempted badge badge-primary">Not Attempted</span>
+                <% } else { %><span class="res_qs_bottom_meta1 res_status res_status_incorrect badge badge-danger">Incorrect</span><% } %>
+                <span class="res_qs_bottom_meta1 res_qs_time_taken badge badge-secondary">
+                    Time taken: <%= Math.floor(r.time_spent_seconds/60) %>min <%= r.time_spent_seconds%60 %>sec
+                </span>
+                <% if (r.real_post_id) { %>
+                <span class="res_qs_bottom_meta1 res_discuss">
+                    <a href="https://gateoverflow.in/<%= r.real_post_id %>" class="badge badge-primary" target="_blank">Discuss</a>
+                </span>
+                <% } %>
+            </div>
+        </div>
+        <% }); %>
+    </div>
+</div>
+</body>
+</html>

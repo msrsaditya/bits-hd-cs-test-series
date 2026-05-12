@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+        body { background:#121212; color:#E0E0E0; font-family:'Segoe UI',sans-serif; }
+        .dashboard-card { background:#1E1E2D; border-radius:10px; padding:20px; box-shadow:0 4px 10px rgba(0,0,0,0.5); }
+        .heat-box { width:35px; height:35px; display:inline-flex; align-items:center; justify-content:center; font-weight:bold; font-size:12px; border-radius:4px; margin:3px; color:#121212; }
+        .topper-card { background:#252538; border-radius:8px; padding:10px; display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; }
+        .text-green { color:#4CAF50; }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <h2 class="mb-4"><%= test.title %></h2>
+    <div class="mb-4"><a href="/exam/<%= test.id %>" class="btn btn-danger btn-lg">Click here to Take Exam</a></div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="dashboard-card">
+                <h5 class="border-bottom border-secondary pb-2">Exam Information</h5>
+                <div class="d-flex justify-content-between mt-3"><p>Maximum Marks</p><b><%= test.total_marks %></b></div>
+                <div class="d-flex justify-content-between"><p>Total Time (mins)</p><b><%= test.duration_minutes %></b></div>
+                <div class="d-flex justify-content-between"><p>Total Takes</p><b><%= stats.total_takes %></b></div>
+                <div class="d-flex justify-content-between"><p>Avg. Mark</p><b><%= parseFloat(stats.avg_mark).toFixed(2) %></b></div>
+                <div class="d-flex justify-content-between"><p>Highest Mark</p><b><%= parseFloat(stats.highest_mark).toFixed(2) %></b></div>
+                <div class="d-flex justify-content-between"><p>Avg. Mark of Top 10%</p><b><%= parseFloat(top10Avg).toFixed(2) %></b></div>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="dashboard-card">
+                <h5 class="mb-3">Question Accuracy <span class="badge bg-primary"><%= heatmap.length %> Qs</span></h5>
+                <div>
+                    <% heatmap.forEach((q,i) => {
+                        let r = q.accuracy<50 ? 255 : Math.floor(255 - (q.accuracy*2 - 100)*255/100);
+                        let g = q.accuracy>50 ? 255 : Math.floor((q.accuracy*2)*255/100);
+                    %>
+                        <div class="heat-box" style="background-color:rgb(<%= r %>,<%= g %>,100)"><%= i+1 %></div>
+                    <% }) %>
+                </div>
+            </div>
+        </div>
+    </div>
+    <h4 class="mt-5 mb-3">Your Results</h4>
+    <%
+    function formatDate(dateStr) {
+        const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+        const d = new Date(dateStr);
+        const day = d.getDate();
+        const month = months[d.getMonth()];
+        const year = d.getFullYear();
+        let hours = d.getHours();
+        const ampm = hours >= 12 ? 'PM' : 'AM';
+        hours = hours % 12;
+        if (hours === 0) hours = 12;
+        const mins = ('0'+d.getMinutes()).slice(-2);
+        let suffix = 'th';
+        if (day === 1 || day === 21 || day === 31) suffix = 'st';
+        else if (day === 2 || day === 22) suffix = 'nd';
+        else if (day === 3 || day === 23) suffix = 'rd';
+        return `${month} ${day}${suffix}, ${year}, ${hours}:${mins} ${ampm}`;
+    }
+    %>
+    <% myAttempts.forEach(att => { %>
+        <div class="dashboard-card mb-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>Marks: <strong><%= att.score %>/<%= test.total_marks %></strong> | Time: <strong><%= parseFloat(att.time_taken).toFixed(0) %> min</strong></div>
+                <form action="/results.php" method="POST" target="_blank">
+                    <input type="hidden" name="resultid" value="<%= att.id %>">
+                    <button type="submit" class="btn btn-primary">View Result</button>
+                </form>
+            </div>
+            <div class="mt-2" style="font-size:0.85rem; color:#adb5bd;"><%= formatDate(att.start_time) %></div>
+        </div>
+    <% }) %>
+    <h4 class="mt-5 mb-3">Toppers</h4>
+    <div class="row">
+        <% toppers.forEach((t,i) => { %>
+            <div class="col-md-3">
+                <div class="topper-card">
+                    <span class="text-primary font-weight-bold">#<%= i+1 %></span>
+                    <div><strong><%= t.username.substring(0,10) %></strong><br>
+                    <span class="text-green"><%= parseFloat(t.score).toFixed(2) %>/<%= test.total_marks %></span></div>
+                </div>
+            </div>
+        <% }) %>
+    </div>
+</div>
+</body>
+</html>
