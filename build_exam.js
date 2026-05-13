@@ -71,7 +71,7 @@ try {
     const katex = `
         <link rel="stylesheet" href="/css/katex.min.css">
         <script defer src="/js/katex.min.js"></script>
-        <script defer src="/js/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'\\[',right:'\\]',display:true},{left:'\\\\(',right:'\\\\)',display:false}],throwOnError:false}); MathJax.Hub._flush();"></script>
+        <script defer src="/js/auto-render.min.js" onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'\\\\(',right:'\\\\)',display:false}],throwOnError:false}); MathJax.Hub._flush();"></script>
     `;
     html = html.replace('</head>', katex + '\n</head>');
     const styleFix = `
